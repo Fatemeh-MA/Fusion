@@ -9,7 +9,7 @@ labels: 761 frames, 13 recording sessions, two domains.
 
 | folder | domain | frames | used for |
 |--------|--------|--------|----------|
-| `sim/isaac_2023-05-02` | NVIDIA Isaac Sim (TODO: version) | 126 | pre-training |
+| `sim/isaac_2023-05-02` | NVIDIA Isaac Sim 2022 | 126 | pre-training |
 | `real/labA_NewLabelRealDown` | lab A, 2023 | 75 | fine-tuning / test |
 | `real/labB_2023-10-22`, `_2023-10-31`, `_2023-11-01`, `_2023-11-10` | lab B | 42 + 135 + 101 + 96 | fine-tuning / test |
 | `real/labC_2023-11-20` | lab C, with demonstrator | 50 | fine-tuning / test |
@@ -23,7 +23,7 @@ label map applied and its class counts.
 
 ## Sensors and recording
 
-- Each lab is observed by two Ouster LiDAR sensors (TODO: model and channels);
+- Each lab is observed by two Ouster OS0-128 LiDAR sensors (128 channels);
   sensor height above the floor is 1.4–2.0 m depending on the session.
 - The work cells contain Franka Emika Panda and Universal Robots UR5 arms, an
   AGV and an Industry 5.0 demonstrator: a pen factory (assembly line).
