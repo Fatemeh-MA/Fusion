@@ -8,6 +8,8 @@ Code and dataset for
 > *Journal of Intelligent & Robotic Systems* 111:94, 2025.
 > [doi:10.1007/s10846-025-02290-9](https://doi.org/10.1007/s10846-025-02290-9)
 
+[[Paper]](https://doi.org/10.1007/s10846-025-02290-9) [[Dataset]](https://github.com/Fatemeh-MA/Fusion/releases/download/V1.0/fusion_dataset_v1.tar.gz) [[Pretrained models]](https://github.com/Fatemeh-MA/Fusion/releases/tag/V1.0)
+
 FUSION is a dual-stream network that segments LiDAR point clouds of
 human-robot collaboration cells. It is trained on simulated scans (NVIDIA
 Isaac Sim) and adapted to a real cell by fine-tuning only its segmentation
@@ -44,7 +46,15 @@ python -m unittest discover tests        # ~6 s on CPU
 
 ## Data
 
-Download the dataset from TODO and extract it into `data/`:
+Download the dataset from the [V1.0 release](https://github.com/Fatemeh-MA/Fusion/releases/tag/V1.0) and extract it
+in the repository folder:
+
+```bash
+wget https://github.com/Fatemeh-MA/Fusion/releases/download/V1.0/fusion_dataset_v1.tar.gz
+tar -xzf fusion_dataset_v1.tar.gz          # creates data/
+```
+
+This gives:
 
 ```
 data/
@@ -215,7 +225,8 @@ It needs `rospy` and PyTorch in the same Python environment.
 | `fusion_original_2024-06-07.pth` | original training code of the paper, lab D fine-tune of 7 June 2024 | the deployed lab-D model |
 | `fusion_original_2026-09-16.pth` | original training code, lab E fine-tune of 16 September 2026 | the deployed lab-E model |
 
-Download: TODO (GitHub release).
+Download from the [V1.0 release](https://github.com/Fatemeh-MA/Fusion/releases/tag/V1.0), e.g.
+`wget https://github.com/Fatemeh-MA/Fusion/releases/download/V1.0/fusion_real.pth`; `SHA256SUMS` checks the files.
 
 The two `fusion_original_*` checkpoints are the models of the original code,
 converted to this format (raw sensor coordinates, 4.8 cm voxel grid; outputs
