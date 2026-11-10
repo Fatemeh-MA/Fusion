@@ -1,0 +1,30 @@
+# RandLA-Net baseline (paper, Table 1), Open3D-ML. Coordinates are floor-aligned metres.
+dataset:
+  num_points: 11000
+  ignored_label_inds: []          # Unlabelled (7) is trained like in FUSION; not scored
+  use_cache: false
+  cache_dir: ./logs/cache
+
+model:
+  name: RandLANet
+  num_classes: 8
+  num_points: 11000
+  num_neighbors: 16
+  num_layers: 5
+  sub_sampling_ratio: [4, 4, 4, 4, 2]
+  in_channels: 3
+  dim_features: 8
+  dim_output: [16, 64, 128, 256, 512]
+  grid_size: 0.04
+  ignored_label_inds: []
+  augment: {}
+
+pipeline:
+  name: SemanticSegmentation
+  optimizer: {lr: 0.001}
+  batch_size: 2
+  val_batch_size: 2
+  test_batch_size: 1
+  max_epoch: 100
+  save_ckpt_freq: 10
+  scheduler_gamma: 0.95

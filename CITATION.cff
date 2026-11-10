@@ -1,0 +1,27 @@
+cff-version: 1.2.0
+message: "If you use this code or dataset, please cite the paper below."
+title: "FUSION: Sim2Real point cloud segmentation for human-robot collaboration"
+authors:
+  - family-names: "Mohammadi Amin"
+    given-names: "Fatemeh"
+  - family-names: "Caldwell"
+    given-names: "Darwin G."
+  - family-names: "van de Venn"
+    given-names: "Hans Wernher"
+license: MIT
+repository-code: "https://github.com/Fatemeh-MA/Fusion"
+preferred-citation:
+  type: article
+  title: "Enhancing Human-Robot Collaboration: A Sim2Real Domain Adaptation Algorithm for Point Cloud Segmentation in Industrial Environments"
+  authors:
+    - family-names: "Mohammadi Amin"
+      given-names: "Fatemeh"
+    - family-names: "Caldwell"
+      given-names: "Darwin G."
+    - family-names: "van de Venn"
+      given-names: "Hans Wernher"
+  journal: "Journal of Intelligent & Robotic Systems"
+  volume: 111
+  start: 94
+  year: 2025
+  doi: "10.1007/s10846-025-02290-9"

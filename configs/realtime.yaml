@@ -1,0 +1,14 @@
+# Real-time node (realtime/segmentation_node.py).
+# The normalization comes from the checkpoint. For a new installation, only the
+# crop box (and the topic) needs to change; after moving the sensors call
+#   rosservice call /reset_floor
+
+checkpoint: fusion_real.pth              # from the GitHub release
+input_topic: /merged/cloud          # merged cloud of both LiDARs
+frame_id: os_sensor
+
+# Region of interest in the sensor frame, metres: [[xmin, xmax], [ymin, ymax], [zmin, zmax]].
+# These are the values of the original lab-D/E node.
+crop_box: [[-0.2, 2.5], [-3.2, 0.0], [-2.0, 0.5]]
+voxel_size: 0.048                   # same voxel size as the recorded real frames
+max_points: 10500                   # larger clouds are processed in chunks of this size

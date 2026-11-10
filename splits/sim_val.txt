@@ -1,0 +1,6 @@
+sim/isaac_2023-05-02/02052023down120.npy
+sim/isaac_2023-05-02/02052023down121.npy
+sim/isaac_2023-05-02/02052023down122.npy
+sim/isaac_2023-05-02/02052023down123.npy
+sim/isaac_2023-05-02/02052023down124.npy
+sim/isaac_2023-05-02/02052023down125.npy

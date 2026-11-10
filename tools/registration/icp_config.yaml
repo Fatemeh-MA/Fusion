@@ -1,0 +1,39 @@
+readingDataPointsFilters:
+  - RandomSamplingDataPointsFilter:
+      prob: 0.50
+
+referenceDataPointsFilters:
+  - SurfaceNormalDataPointsFilter:
+      knn: 10
+
+matcher:
+  KDTreeMatcher:
+    knn: 1
+
+outlierFilters:
+  - TrimmedDistOutlierFilter:
+      ratio: 0.90
+
+errorMinimizer:
+  PointToPlaneErrorMinimizer
+
+transformationCheckers:
+  - CounterTransformationChecker:
+      maxIterationCount: 100
+  - DifferentialTransformationChecker:
+      minDiffRotErr: 0.001
+      minDiffTransErr: 0.001
+      smoothLength: 4 
+
+inspector:
+  VTKFileInspector:
+     baseFileName : test
+     dumpPerfOnExit: 1
+     dumpIterationInfo: 1
+     dumpStats: 0
+     dumpDataLinks : 1
+     dumpReading : 1
+     dumpReference : 1
+
+logger:
+  FileLogger

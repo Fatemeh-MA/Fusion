@@ -1,0 +1,86 @@
+# How the released dataset was built from the raw recordings (tools/build_dataset.py).
+#
+# The raw recordings do not all use the same ids for AGV and Unlabelled.
+# The released files follow sim2real/labels.py: 6 = AGV, 7 = Unlabelled.
+# The label_map of each source was determined from the geometry of the
+# labelled points (the AGV is a compact ~0.7 m wide, ~1.3 m tall object on the
+# floor; Unlabelled points are scattered) and checked visually.
+#
+#   raw convention                       label_map
+#   6 = AGV,        no 7                 {}            (already correct)
+#   7 = AGV,        6 = Unlabelled       {6: 7, 7: 6}  (swap)
+#   6 = Unlabelled, no AGV in the scene  {6: 7}
+
+source_root: /home/lidar/Thesis
+
+sources:
+  # ---- simulation (NVIDIA Isaac Sim) -------------------------------------
+  # Rebuilt at full density from the raw Isaac output with the hand-corrected
+  # labels (tools/isaac_to_npy.py).
+  - name: sim/isaac_2023-05-02
+    type: isaac
+    raw: Isaac-SIM-synthetic-data/Tests/02052023
+    path: "Tests/02052023/Down/SIMCorrect annotation/NPY-Downto11000"
+    voxel: 0.02
+
+  # ---- real, lab A -------------------------------------------------------
+  - name: real/labA_NewLabelRealDown
+    path: Tests/RealLAb/NewLabelingDownSample/1/Train
+    pattern: '^NewLabelRealDown\d+\.npy$'
+    label_map: {6: 7, 7: 6}
+
+  # ---- real, lab B (Oct/Nov 2023) -----------------------------------------
+  - name: real/labB_2023-10-22
+    path: New_Real_Lab/Train
+    pattern: '^(cut_merged_labelled|pointcloudLabel)\d+\.npy$'
+    label_map: {}
+  - name: real/labB_2023-10-31
+    path: New_Real_Lab/Train
+    pattern: '^\d+\.npy$'
+    label_map: {6: 7}
+  - name: real/labB_2023-11-01
+    path: New_Real_Lab/Train
+    pattern: '^0_\d+\.npy$'
+    label_map: {6: 7}
+  - name: real/labB_2023-11-10
+    path: New_Real_Lab/Train
+    pattern: '^10\.11\.2023_\d+\.npy$'
+    label_map: {6: 7}
+
+  # ---- real, lab C with demonstrator (20 Nov 2023) -------------------------
+  - name: real/labC_2023-11-20
+    path: New-Lab_demonstrator/merged1_2/npy_cut/correct_label/Train
+    pattern: '^LabDemons.*\.npy$'
+    label_map: {6: 7, 7: 6}
+  - name: real/labC_2023-11-20
+    path: New-Lab_demonstrator/merged1_2/npy_cut/correct_label/Test
+    pattern: '^LabDemons.*\.npy$'
+    label_map: {6: 7, 7: 6}
+
+  # ---- real, fine-tuning environments ---------------------------------------
+  # These folders mix recording dates, so frames are grouped by the date in
+  # their file name (by_date). Exact duplicate files are dropped automatically.
+  - name: real/labD
+    path: New_Real_Lab/29.11.2023/Train
+    by_date: true
+    label_map: {6: 7}
+  - name: real/labD
+    path: New_Real_Lab/29.11.2023/Test
+    by_date: true
+    label_map: {6: 7}
+  - name: real/labD
+    path: New_Real_Lab/07.06.2024/NPY/Train
+    by_date: true
+    label_map: {6: 7}
+  - name: real/labD
+    path: New_Real_Lab/07.06.2024/NPY/Test
+    by_date: true
+    label_map: {6: 7}
+  - name: real/labE
+    path: NewDataLab2026/npy_new/Train
+    by_date: true
+    label_map: {6: 7}
+  - name: real/labE
+    path: NewDataLab2026/npy_new/Test
+    by_date: true
+    label_map: {6: 7}

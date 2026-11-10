@@ -1,0 +1,35 @@
+# KPConv baseline, Open3D-ML. Coordinates are floor-aligned metres.
+dataset:
+  num_points: 11000
+  ignored_label_inds: []
+  use_cache: false
+  cache_dir: ./logs/cache
+
+model:
+  name: KPFCNN
+  num_classes: 8
+  in_points_dim: 3
+  in_features_dim: 1
+  first_subsampling_dl: 0.04
+  conv_radius: 2.5
+  deform_radius: 5.0
+  num_kernel_points: 15
+  first_features_dim: 128
+  ignored_label_inds: []
+  augment_scale_min: 0.9
+  augment_scale_max: 1.1
+  augment_rotation: vertical
+  in_radius: 4.0
+  max_in_points: 20000
+  batch_num: 4
+  batch_limit: 20000
+
+pipeline:
+  name: SemanticSegmentation
+  optimizer: {lr: 0.01, momentum: 0.98}
+  batch_size: 1
+  val_batch_size: 1
+  test_batch_size: 1
+  max_epoch: 100
+  save_ckpt_freq: 10
+  scheduler_gamma: 0.95

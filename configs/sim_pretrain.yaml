@@ -1,0 +1,51 @@
+# Step 1 of the paper: train the FUSION (dual-stream) network on simulated frames only.
+
+data:
+  root: data                     # folder that the split files are relative to
+  train_split: splits/sim_train.txt
+  val_split: splits/sim_val.txt
+  test_split: splits/sim_test.txt
+  num_points: 10500              # max points per training sample
+  voxel_size: 0.048              # one point per 4.8 cm voxel, like the real-time node;
+                                 # removes density differences between sim and real
+
+model:
+  name: dualstream
+  args:
+    num_classes: 8
+    k: 40                        # neighbours in the DGCNN graph
+    dropout: 0.35
+
+# floor:  level the floor, floor at z = 0, centre x/y per frame, one fixed scale.
+#         Works when the sensor or the crop box changes (default).
+# global: (p - mean) / rms with dataset-wide statistics.
+# none:   raw sensor coordinates, as the checkpoints of the paper.
+normalization: floor
+
+augmentation:                    # in metres, after the floor alignment
+  rotate_z: [0, 360]             # degrees, about the vertical axis
+  flip: true                     # mirror image of the scene (paper, Sec. 3.2)
+  scale: [0.9, 1.1]              # kept narrow: height above the floor carries meaning
+  shift_xy: 1.0                  # metres
+  jitter_std: 0.01
+  jitter_clip: 0.05
+  crop_xy: [2.5, 7.0]            # random crop box side (m), like the real-time crop
+  crop_prob: 0.5
+
+train:
+  epochs: 100
+  batch_size: 10
+  num_workers: 8
+  seed: 1
+  ignore_index: null               # Unlabelled is learnt as a class (clutter must go somewhere)
+  score_ignore_index: 7            # ... but it is not counted in mIoU / accuracy
+  class_weights: [0.14, 0.15, 0.12, 0.15, 0.12, 0.12, 0.16, 0.07]
+  # Paper, Sec. 4.1: Adam, lr 0.001, cosine decay. The original script used
+  # RMSprop 1.76e-4 with a 30x step at epoch 15 (hyper-parameter search of
+  # 2023); both are supported, see README "Training".
+  optimizer: {name: adam, lr: 1.0e-3, weight_decay: 1.0e-4}
+  scheduler: {name: cosine, min_lr: 1.0e-5}
+  grad_clip: null
+  val_every: 1
+
+output_dir: outputs/sim

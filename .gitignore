@@ -1,0 +1,17 @@
+# data and results are distributed separately
+data/
+outputs/
+*.pth
+*.pt
+*.t7
+
+__pycache__/
+*.py[cod]
+.idea/
+.vscode/
+.ipynb_checkpoints/
+
+# private dataset clones, never part of this repository
+github_private/
+Datasets/
+point-cloud-completion-dataset/
