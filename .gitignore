@@ -15,3 +15,6 @@ __pycache__/
 github_private/
 Datasets/
 point-cloud-completion-dataset/
+
+# private notes for this computer
+/README_RUN.md

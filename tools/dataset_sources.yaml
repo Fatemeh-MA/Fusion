@@ -84,3 +84,57 @@ sources:
     path: NewDataLab2026/npy_new/Test
     by_date: true
     label_map: {6: 7}
+
+  # ===== V1.1 additions =======================================================
+  # More frames of the sessions above (their test/val folders and extra
+  # corrected frames) and new sessions. `dedupe` skips frames that are already
+  # in the dataset at another resolution or with an older labelling.
+
+  # ---- simulation, October 2022 (Isaac Sim "Lab1" scene, no AGV) ------------
+  - {name: sim/isaac_2022-10, path: Tests/Lab1/13102022/NPY1410, rename: ['^', 'a_'], label_map: {}, dedupe: true}
+  - {name: sim/isaac_2022-10, path: Tests/Lab1/13102022/NPY, rename: ['^(beforeshaffel)?', 'b_'], label_map: {}, dedupe: true}
+  - {name: sim/isaac_2022-10, path: Tests/Lab1/NPY/2, rename: ['^', 'c_'], label_map: {}, dedupe: true}
+  - {name: sim/isaac_2022-10, path: Tests/Lab1/NPY/1, rename: ['^', 'd_'], label_map: {}, dedupe: true}
+
+  # ---- real, lab A ------------------------------------------------------------
+  - {name: real/labA_NewLabelRealDown, path: Tests/RealLAb/NewLabelingDownSample/1/Test, pattern: '^NewLabelRealDown\d+\.npy$', label_map: {6: 7, 7: 6}, dedupe: true}
+
+  # ---- real, lab B ------------------------------------------------------------
+  - {name: real/labB_2023-10-22, path: "22.10.2023/merged/test/cut_point/coloredLabelled_cut/Correct_Label/Dataset/Train", pattern: '^(cut_merged_labelled|pointcloudLabel)\d+\.npy$', label_map: {}, dedupe: true}
+  - {name: real/labB_2023-10-22, path: "22.10.2023/merged/test/cut_point/coloredLabelled_cut/Correct_Label/Dataset/Test", pattern: '^(cut_merged_labelled|pointcloudLabel)\d+\.npy$', label_map: {}, dedupe: true}
+  - {name: real/labB_2023-10-22, path: "22.10.2023/merged/test/cut_point/coloredLabelled_cut/Correct_Label", pattern: '^Predicted_Unlabelled_to_lAbelled', label_map: {}, rename: ['^Predicted_Unlabelled_to_lAbelled', ''], dedupe: true}
+  - {name: real/labB_2023-10-31, path: New_Real_Lab/correct_label_31.10.2023/npy, pattern: '^\d+\.npy$', label_map: {6: 7}, dedupe: true}
+  - {name: real/labB_2023-11-01, path: New_Real_Lab/correct_label_01.11.2023/npy, pattern: '^0_\d+\.npy$', label_map: {6: 7}, dedupe: true}
+  - {name: real/labB_2023-11-10, path: New_Real_Lab/correct_label_10.11.2023/npy, pattern: '^10\.11\.2023_\d+\.npy$', label_map: {6: 7}, dedupe: true}
+  - {name: real/labB_2023-10-22, path: New_Real_Lab/Test, pattern: '^(cut_merged_labelled|pointcloudLabel)\d+\.npy$', label_map: {}, dedupe: true}
+  - {name: real/labB_2023-10-31, path: New_Real_Lab/Test, pattern: '^\d+\.npy$', label_map: {6: 7}, dedupe: true}
+  - {name: real/labB_2023-11-01, path: New_Real_Lab/Test, pattern: '^0_\d+\.npy$', label_map: {6: 7}, dedupe: true}
+  - {name: real/labB_2023-11-10, path: New_Real_Lab/Test, pattern: '^10\.11\.2023_\d+\.npy$', label_map: {6: 7}, dedupe: true}
+  - {name: real/labB_2023-10-22, path: New_Real_Lab/val, pattern: '^(cut_merged_labelled|pointcloudLabel)\d+\.npy$', label_map: {}, dedupe: true}
+  - {name: real/labB_2023-10-31, path: New_Real_Lab/val, pattern: '^\d+\.npy$', label_map: {6: 7}, dedupe: true}
+  - {name: real/labB_2023-11-01, path: New_Real_Lab/val, pattern: '^0_\d+\.npy$', label_map: {6: 7}, dedupe: true}
+  - {name: real/labB_2023-11-10, path: New_Real_Lab/val, pattern: '^10\.11\.2023_\d+\.npy$', label_map: {6: 7}, dedupe: true}
+  - {name: real/labB_2023-10-22, path: New_Real_Lab/Test2_less, pattern: '^(cut_merged_labelled|pointcloudLabel)\d+\.npy$', label_map: {}, dedupe: true}
+  - {name: real/labB_2023-10-31, path: New_Real_Lab/Test2_less, pattern: '^\d+\.npy$', label_map: {6: 7}, dedupe: true}
+  - {name: real/labB_2023-11-01, path: New_Real_Lab/Test2_less, pattern: '^0_\d+\.npy$', label_map: {6: 7}, dedupe: true}
+  - {name: real/labB_2023-11-10, path: New_Real_Lab/Test2_less, pattern: '^10\.11\.2023_\d+\.npy$', label_map: {6: 7}, dedupe: true}
+
+  # ---- real, lab D and lab E --------------------------------------------------
+  - {name: real/labD, path: New_Real_Lab/07.06.2024/NPY/Val, by_date: true, label_map: {6: 7}, dedupe: true}
+  - {name: real/labE, path: NewDataLab2026/npy_new/val, by_date: true, label_map: {6: 7}, dedupe: true}
+  - {name: real/labE, path: NewDataLab2026/npy, by_date: true, label_map: {6: 7}, dedupe: true}
+  - {name: real/labE_2026-08-27, path: NewDataLab2026/npy/Train, label_map: {6: 7}, dedupe: true}
+  - {name: real/labE_2026-08-27, path: NewDataLab2026/npy/Test, label_map: {6: 7}, dedupe: true}
+
+  # ---- real, demonstrator installation (25.11.2023) --------------------------
+  - {name: real/demo, path: Demo_2023-11/Train, rename: ['^[A-Z]+', ''], by_date: true, label_map: {6: 7}, source_label: demo recording, dedupe: true}
+  - {name: real/demo, path: Demo_2023-11/Val, rename: ['^[A-Z]+', ''], by_date: true, label_map: {6: 7}, source_label: demo recording, dedupe: true}
+  - {name: real/demo, path: Demo_2023-11/Test, rename: ['^[A-Z]+', ''], by_date: true, label_map: {6: 7}, source_label: demo recording, dedupe: true}
+
+  # ---- real, lab A: COVERED scenes ---------------------------------------------
+  # COVERED (5 classes + Unlabeled) recorded in lab A; demonstrator and tables
+  # are taken from the relabelled lab-A frames of the same room.
+  - {name: real/labA_covered_s1, type: covered, path: COVERED/Scenario1/npy_label_data, reference: real/labA_NewLabelRealDown, source_label: COVERED scenario 1, dedupe: true}
+  - {name: real/labA_covered_s2, type: covered, path: COVERED/Scenario2/npy_label_data, reference: real/labA_NewLabelRealDown, source_label: COVERED scenario 2, dedupe: true}
+  - {name: real/labA_covered_s3, type: covered, path: COVERED/Scenario3/npy_label_data, reference: real/labA_NewLabelRealDown, source_label: COVERED scenario 3, dedupe: true}
+  - {name: real/labA_covered_s4, type: covered, path: COVERED/Scenario4/npy_label_data, reference: real/labA_NewLabelRealDown, source_label: COVERED scenario 4, dedupe: true}

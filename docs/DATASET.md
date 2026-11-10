@@ -5,16 +5,26 @@
 ## Summary
 
 LiDAR scans of human-robot collaboration workspaces with per-point semantic
-labels: 761 frames, 13 recording sessions, two domains.
+labels: 1252 frames, 20 recording sessions, two domains (version 1.1).
 
 | folder | domain | frames | used for |
 |--------|--------|--------|----------|
+| `sim/isaac_2022-10` | NVIDIA Isaac Sim 2022, October 2022 runs | 120 | pre-training |
 | `sim/isaac_2023-05-02` | NVIDIA Isaac Sim 2022 | 126 | pre-training |
-| `real/labA_NewLabelRealDown` | lab A, 2023 | 75 | fine-tuning / test |
-| `real/labB_2023-10-22`, `_2023-10-31`, `_2023-11-01`, `_2023-11-10` | lab B | 42 + 135 + 101 + 96 | fine-tuning / test |
+| `real/labA_NewLabelRealDown` | lab A, 2023 | 99 | fine-tuning / test |
+| `real/labA_covered_s1` … `_s4` | lab A, COVERED scenarios 1–4 | 25 + 18 + 32 + 44 | fine-tuning / test |
+| `real/labB_2023-10-22`, `_2023-10-31`, `_2023-11-01`, `_2023-11-10` | lab B | 61 + 183 + 109 + 106 | fine-tuning / test |
 | `real/labC_2023-11-20` | lab C, with demonstrator | 50 | fine-tuning / test |
-| `real/labD_2023-11-29` … `_2024-06-07` (5 sessions) | lab D | 71 | fine-tuning / test |
-| `real/labE_2026-08-27` | lab E | 65 | fine-tuning / test (recorded after the paper) |
+| `real/labD_2023-11-29` … `_2024-06-07` (5 sessions) | lab D | 73 | fine-tuning / test |
+| `real/labE_2026-08-27` | lab E | 68 | fine-tuning / test (recorded after the paper) |
+| `real/demo_2023-11-25`, `_2023-11-26` | demonstration cell, two days | 105 + 33 | fine-tuning / test |
+
+### Versions
+
+| version | frames | changes |
+|---------|--------|---------|
+| 1.0 | 761 | first release |
+| 1.1 | 1252 | adds the October 2022 simulation runs, the COVERED scenarios of lab A with AGV, table and demonstrator labels, the demonstration recording, and further labelled frames of labs A, B, D and E. The 761 files of version 1.0 are unchanged. |
 
 TODO: lab names (the paper's "Lab 1" and "Lab 2" correspond to which of A–E?).
 
@@ -36,9 +46,10 @@ label map applied and its class counts.
 - Simulated frames are rebuilt from the raw Isaac Sim output (full density,
   2 cm voxel grid) with the hand-corrected labels, see `tools/isaac_to_npy.py`.
   Robots have no semantic class in Isaac and were labelled by hand; this was
-  done for 126 of the 209 frames of the 02.05.2023 run. The other raw runs
-  (26.04.2023: 112 frames, 27.04.2023: 25, and the 2022 runs) still need the
-  robot labels before they can be released.
+  done for 126 of the 209 frames of the 02.05.2023 run. The October 2022 runs
+  (`sim/isaac_2022-10`) are released as converted, labelled frames of about
+  58 000 points. The raw runs of 26.04.2023 (112 frames) and 27.04.2023 (25)
+  still need the robot labels before they can be released.
   The later sessions (lab D, E) were recorded through the real-time node:
   crop box plus a 0.048 m voxel grid, about 5 000 points per frame.
 
@@ -93,8 +104,16 @@ in that numbering to the one of this dataset.
 The released files all use the numbering of this dataset; no remapping is
 needed.
 
-The original COVERED dataset (https://github.com/Fatemeh-MA/COVERED, 4
-scenarios, 5 classes) is not part of this release.
+### COVERED scenarios (`real/labA_covered_s*`)
+
+The four scenarios of the COVERED dataset (https://github.com/Fatemeh-MA/COVERED)
+were recorded in lab A. COVERED labels Robot, Human, Wall, Floor and AGV
+(raw numbering, see the table above). In this release the remaining points
+(the demonstrator, tables and other static objects) carry the static class of
+the nearest point, within 5 cm, of the labelled lab A frames of the same room;
+points with no such neighbour are Unlabelled. Frames already contained in
+`real/labA_NewLabelRealDown` (same scan at another resolution) are included
+only once.
 
 ## Format
 
@@ -109,7 +128,8 @@ xyz, label = frame[:, :3], frame[:, 3].astype(int)
 
 ## Splits
 
-`splits/*.txt` list the frames of each split, relative to `data/`:
+`splits/*.txt` list the frames of each split of version 1.0, relative to
+`data/`; the released models and results use these:
 
 | files | data | train / val / test frames |
 |-------|------|---------------------------|
@@ -120,6 +140,22 @@ xyz, label = frame[:, :3], frame[:, 3].astype(int)
 | `labD_*.txt` | lab D, 5 sessions | 37 / 12 / 22 |
 | `labE_*.txt` | lab E | 34 / 9 / 22 |
 | `real_all_train.txt`, `real_all_val.txt` | labs A–E together (the per-lab test sets stay held out) | 328 / 94 / – |
+
+`splits/v1.1/` covers all 1252 frames of version 1.1. Every frame of version
+1.0 keeps its split; a new frame of an existing session joins the split of its
+most similar version 1.0 frame, and new sessions are split in blocks of
+consecutive frames (`tools/extend_splits.py`):
+
+| files | train / val / test frames |
+|-------|---------------------------|
+| `sim_*.txt` | 180 / 16 / 50 |
+| `labA_*.txt` (incl. COVERED) | 123 / 35 / 60 |
+| `labB_*.txt` | 225 / 70 / 164 |
+| `labC_*.txt` | 31 / 5 / 14 |
+| `labD_*.txt` | 38 / 12 / 23 |
+| `labE_*.txt` | 37 / 9 / 22 |
+| `demo_*.txt` | 98 / 15 / 25 |
+| `real_all_train.txt`, `real_all_val.txt` | 552 / 146 / – |
 
 Consecutive frames are nearly identical, so frames are split in blocks of
 consecutive frames (10 for simulation, 5 for the real sessions), never one by

@@ -1,8 +1,7 @@
 # Step 2 of the paper: adapt to a real environment with a few labelled frames.
 #
-# Default: fine-tune the whole network at a low learning rate, which gave the
-# best results on the real labs. For the head-only fine-tuning of the paper
-# (conv8, conv9 trained, encoders frozen) set
+# Default: fine-tune the whole network at a low learning rate. To train the
+# segmentation head only (conv8, conv9) set
 #   finetune.freeze_encoders=true finetune.freeze_bn=true train.optimizer.lr=1.13e-3
 # Fine-tuning can be chained (sim -> lab A -> lab B ...); the normalization
 # (mode, scale, voxel) always comes from `init_from`.
@@ -23,9 +22,9 @@ model:
     dropout: 0.35
 
 finetune:
-  init_from: outputs/sim/best.pth     # previous stage; original checkpoints work too
-  reset_head: false                   # true: new random conv9 (the original test4 did this)
-  freeze_encoders: false              # true: train conv8/conv9 only (the paper)
+  init_from: outputs/sim/best.pth     # previous stage
+  reset_head: false                   # true: new random conv9
+  freeze_encoders: false              # true: train conv8/conv9 only
   freeze_bn: false                    # true: keep the encoders' BatchNorm statistics
 
 augmentation:

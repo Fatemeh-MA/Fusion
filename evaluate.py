@@ -6,7 +6,8 @@
         --save-predictions outputs/test_predictions
 
 Checkpoints from the original training code (main2Stream.py) are accepted
-too; they were trained on raw coordinates, so no normalization is applied.
+too; they were fine-tuned and deployed on raw sensor coordinates, so no
+normalization is applied.
 """
 
 import argparse

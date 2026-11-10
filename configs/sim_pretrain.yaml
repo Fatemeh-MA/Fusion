@@ -19,7 +19,7 @@ model:
 # floor:  level the floor, floor at z = 0, centre x/y per frame, one fixed scale.
 #         Works when the sensor or the crop box changes (default).
 # global: (p - mean) / rms with dataset-wide statistics.
-# none:   raw sensor coordinates, as the checkpoints of the paper.
+# none:   raw sensor coordinates.
 normalization: floor
 
 augmentation:                    # in metres, after the floor alignment
@@ -40,9 +40,8 @@ train:
   ignore_index: null               # Unlabelled is learnt as a class (clutter must go somewhere)
   score_ignore_index: 7            # ... but it is not counted in mIoU / accuracy
   class_weights: [0.14, 0.15, 0.12, 0.15, 0.12, 0.12, 0.16, 0.07]
-  # Paper, Sec. 4.1: Adam, lr 0.001, cosine decay. The original script used
-  # RMSprop 1.76e-4 with a 30x step at epoch 15 (hyper-parameter search of
-  # 2023); both are supported, see README "Training".
+  # Adam with cosine decay (paper, Sec. 4.1); rmsprop / sgd and a step
+  # schedule are also supported, see train.py.
   optimizer: {name: adam, lr: 1.0e-3, weight_decay: 1.0e-4}
   scheduler: {name: cosine, min_lr: 1.0e-5}
   grad_clip: null

@@ -8,7 +8,7 @@ Code and dataset for
 > *Journal of Intelligent & Robotic Systems* 111:94, 2025.
 > [doi:10.1007/s10846-025-02290-9](https://doi.org/10.1007/s10846-025-02290-9)
 
-[[Paper]](https://doi.org/10.1007/s10846-025-02290-9) [[Dataset]](https://github.com/Fatemeh-MA/Fusion/releases/download/V1.0/fusion_dataset_v1.tar.gz) [[Pretrained models]](https://github.com/Fatemeh-MA/Fusion/releases/tag/V1.0)
+[[Paper]](https://doi.org/10.1007/s10846-025-02290-9) [[Dataset]](https://github.com/Fatemeh-MA/Fusion/releases/download/V1.1/fusion_dataset_v1.1.tar.gz) [[Pretrained models]](https://github.com/Fatemeh-MA/Fusion/releases/tag/V1.0)
 
 FUSION is a dual-stream network that segments LiDAR point clouds of
 human-robot collaboration cells. It is trained on simulated scans (NVIDIA
@@ -46,21 +46,26 @@ python -m unittest discover tests        # ~6 s on CPU
 
 ## Data
 
-Download the dataset from the [V1.0 release](https://github.com/Fatemeh-MA/Fusion/releases/tag/V1.0) and extract it
+Download the dataset (version 1.1, 1252 frames) from the
+[V1.1 release](https://github.com/Fatemeh-MA/Fusion/releases/tag/V1.1) and extract it
 in the repository folder:
 
 ```bash
-wget https://github.com/Fatemeh-MA/Fusion/releases/download/V1.0/fusion_dataset_v1.tar.gz
-tar -xzf fusion_dataset_v1.tar.gz          # creates data/
+wget https://github.com/Fatemeh-MA/Fusion/releases/download/V1.1/fusion_dataset_v1.1.tar.gz
+tar -xzf fusion_dataset_v1.1.tar.gz        # creates data/
 ```
+
+Version 1.0 (761 frames, the data of the released models) is in the
+[V1.0 release](https://github.com/Fatemeh-MA/Fusion/releases/tag/V1.0); its
+files are contained unchanged in version 1.1.
 
 This gives:
 
 ```
 data/
-├── sim/isaac_2023-05-02/*.npy     simulated frames (NVIDIA Isaac Sim)
-├── real/labA_…/ … real/labE_…/    real frames, one folder per recording session
-└── manifest.csv                   source and label fix of every frame
+├── sim/isaac_2022-10/, sim/isaac_2023-05-02/   simulated frames (NVIDIA Isaac Sim)
+├── real/labA_…/ … real/labE_…/, real/demo_…/   real frames, one folder per recording session
+└── manifest.csv                                 source and label fix of every frame
 ```
 
 Each frame is an `N×4` float32 array `[x, y, z, label]` in metres, in the
@@ -68,7 +73,9 @@ frame of the (merged) LiDAR sensors. [docs/DATASET.md](docs/DATASET.md)
 describes the sessions, the labels and how the files were built.
 
 Split files are in [splits/](splits/): `sim_*` for pre-training and
-`labA_*` … `labE_*` for fine-tuning and testing in each real environment.
+`labA_*` … `labE_*` for fine-tuning and testing in each real environment
+(version 1.0, used for the released models); [splits/v1.1/](splits/v1.1/)
+extends them to all frames of version 1.1 (`tools/extend_splits.py`).
 Frames are split in blocks of consecutive frames so that no test frame has a
 near-identical neighbour in training; for the real labs every recording
 session is split on its own (`--per-folder`), so each session is in train,
@@ -113,18 +120,8 @@ mIoU) to its `output_dir`. Any config entry can be overridden with
 | optimizer | Adam, lr 1e-3, weight decay 1e-4 (paper, Sec. 4.1) | Adam, lr 1e-4, weight decay 5.6e-4, gradient clip 10 |
 | schedule | cosine to 1e-5 over 100 epochs | cosine to 1e-5 over 50 epochs |
 | batch | 10 pieces of ≤ 10 500 points | 1 frame, used whole |
-| trained layers | all | all (the paper trained conv8/conv9 only; see `configs/finetune.yaml`) |
+| trained layers | all | all |
 | loss | cross-entropy, class weights [0.14 0.15 0.12 0.15 0.12 0.12 0.16 0.07] | same |
-
-The original script used RMSprop (lr 1.76e-4, weight decay 6.76e-4, a 30x
-step at epoch 15, found by a hyper-parameter search in 2023). It is still
-available:
-
-```bash
-python train.py --config configs/sim_pretrain.yaml \
-    --set "train.optimizer={name: rmsprop, lr: 1.76e-4, weight_decay: 6.76e-4}" \
-          "train.scheduler={name: step, step_size: 15, gamma: 0.03143, min_lr: 1.0e-5}"
-```
 
 ### Normalization: independent of the lab, the sensor pose and the data source
 
@@ -253,7 +250,7 @@ scored. The results stay the same when the sensor is moved, raised, tilted or
 turned (`tools/eval_sensor_moves.py`).
 
 Checkpoints store their normalization, so `evaluate.py` and the real-time
-node need nothing else. Checkpoints of the original code (raw coordinates)
+node need nothing else. Checkpoints of the original code (raw sensor coordinates, as deployed)
 load too.
 
 ## A new environment
@@ -280,26 +277,6 @@ carefully where people and robots touch, and judge the result only on
 frames from another part of the recording: consecutive frames are nearly
 identical. Keep the label numbers of `sim2real/labels.py` (6 = AGV,
 7 = Unlabelled).
-
-## Changes compared with the code of the paper
-
-The network is the one of the paper; checkpoints of the original code load
-unchanged. This release adds:
-
-- **Normalization independent of the installation**: voxel grid, floor
-  alignment, per-piece centring and a fixed scale, stored in the checkpoint.
-  The same model works when the sensors are moved or the crop box changes.
-- **One class numbering for all recordings**; the raw recordings used two
-  orders for AGV and Unlabelled (see [docs/DATASET.md](docs/DATASET.md)).
-- **Uniform point density**: simulated frames rebuilt at full density from
-  the raw Isaac Sim output.
-- **Online augmentation** (rotation, flip, scale, shift, crop box, jitter).
-- **Splits** in blocks of consecutive frames, per recording session.
-- **Whole-network fine-tuning** at a low learning rate, which gave the best
-  results; the head-only fine-tuning of the paper is a config switch away.
-- **Unlabelled** is learnt as a class but not scored.
-
-Use `--set normalization=none` to train on raw coordinates like the paper.
 
 ## Citation
 

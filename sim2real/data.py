@@ -145,7 +145,8 @@ class Normalizer:
         frame's median x/y, divide by `scale`. Independent of the sensor pose
         and of the crop box; only `scale` is learnt from the training split.
     mode "global": (p - center) / scale with dataset-wide statistics.
-    mode "none": raw coordinates, as used by the checkpoints of the paper.
+    mode "none": raw sensor coordinates, as used by the released original
+    checkpoints (fine-tuned and deployed without normalization).
     """
 
     MODES = ("floor", "global", "none")
