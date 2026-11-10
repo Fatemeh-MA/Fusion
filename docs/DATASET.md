@@ -10,7 +10,7 @@ labels: 761 frames, 13 recording sessions, two domains.
 | folder | domain | frames | used for |
 |--------|--------|--------|----------|
 | `sim/isaac_2023-05-02` | NVIDIA Isaac Sim (TODO: version) | 126 | pre-training |
-| `real/labA_NewLabelRealDown` | lab A (TODO: date) | 75 | fine-tuning / test |
+| `real/labA_NewLabelRealDown` | lab A, 2023 | 75 | fine-tuning / test |
 | `real/labB_2023-10-22`, `_2023-10-31`, `_2023-11-01`, `_2023-11-10` | lab B | 42 + 135 + 101 + 96 | fine-tuning / test |
 | `real/labC_2023-11-20` | lab C, with demonstrator | 50 | fine-tuning / test |
 | `real/labD_2023-11-29` … `_2024-06-07` (5 sessions) | lab D | 71 | fine-tuning / test |
@@ -23,8 +23,10 @@ label map applied and its class counts.
 
 ## Sensors and recording
 
-- Each lab is observed by two LiDAR sensors (TODO: model, channels, frame rate);
+- Each lab is observed by two Ouster LiDAR sensors (TODO: model and channels);
   sensor height above the floor is 1.4–2.0 m depending on the session.
+- The work cells contain Franka Emika Panda and Universal Robots UR5 arms, an
+  AGV and an Industry 5.0 demonstrator: a pen factory (assembly line).
 - The real scans combine two LiDARs. Their clouds were aligned with
   point-to-plane ICP (libpointmatcher), see
   [tools/registration/](../tools/registration/README.md).
@@ -44,16 +46,17 @@ label map applied and its class counts.
 
 | id | class | description |
 |----|-------|-------------|
-| 0 | Robot | TODO: robot model(s) |
+| 0 | Robot | robot arms: Franka Emika Panda, UR5 |
 | 1 | Human | people in the work cell |
 | 2 | Wall | walls and fixed structures |
 | 3 | Floor | ground |
-| 4 | Demonstrator | TODO |
+| 4 | Demonstrator | Industry 5.0 pen-factory demonstrator (assembly line) |
 | 5 | Table | tables and work benches |
 | 6 | AGV | automated guided vehicle |
 | 7 | Unlabelled | points not assigned to any class; ignored in training and evaluation |
 
-Labelling tool: **TODO**.
+Labelling tool: [semantic-segmentation-editor](https://github.com/Hitachi-Automotive-And-Industry-Lab/semantic-segmentation-editor)
+(v1.2.0), point-cloud mode; its PCD export is converted with `tools/pcd_to_npy.py`.
 
 ### Label order in the raw recordings
 
